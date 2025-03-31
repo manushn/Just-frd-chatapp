@@ -1,0 +1,112 @@
+.passresetmain{
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+.warnmessage{
+    position: absolute;
+    background-color: rgba(255, 69, 69,0.9);
+    border-radius: 20px;
+    display: flex;
+    width: 200px;
+}
+.warnmessage p{
+    margin-top: 30px;
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+}
+.warnclose{
+    position: absolute;
+    display: flex;
+    padding-bottom: 10px;
+    
+}
+.warnclose button{
+    margin-left: 170px;
+    padding: 6px;
+    border: none;
+    width: 30px;
+    background-color: rgba(255, 69, 69, 0.9);
+    color: white;
+}
+.otpformmain{
+    border: 1px solid grey;
+    padding: 20px;
+    border-radius: 20px;
+    
+}
+
+.otpform{
+    display: flex;
+    flex-direction: column;
+}
+.otpform h2{
+    background: linear-gradient(84deg, rgba(195, 34, 172, 1) 0%, rgba(45, 84, 253, 1) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+
+}
+.formdatainput{
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+}
+.formdatainput label{
+ padding-bottom: 10px;
+ font-size: 15px;
+ font-weight: bold;
+}
+
+.formdatainput input{
+    padding: 8px;
+    border-radius: 10px;
+    border: 1px solid black;
+    width: 200px;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+.resetotpbtn{
+    display: flex;
+    justify-content: center;
+}
+
+.resetotpbtn button{
+    margin-top: 40px;
+    background-color: rgb(25, 164, 27);
+    color: white;
+    padding: 8px;
+    border: none;
+    border-radius:10px;
+    width: 100px;
+    cursor: pointer;
+
+
+}
+
+.otpsendmain{
+    border: 1px solid grey;
+    padding: 20px;
+    border-radius: 10px;
+}
+.otpsendmain h2{
+    background: linear-gradient(84deg, rgba(195, 34, 172, 1) 0%, rgba(45, 84, 253, 1) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+}
+.resentotp button{
+    margin-left: 20px;
+    margin-top: 40px;
+    border: none;
+    background-color: white;
+    margin-bottom: 30px;
+}
+.resentotp button:hover{
+    cursor: pointer;
+    color: blueviolet;
+}
+.resentotp p{
+    margin-left: 10px;
+}

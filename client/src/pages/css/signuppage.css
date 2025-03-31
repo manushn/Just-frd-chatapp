@@ -1,0 +1,119 @@
+.signupprofile img{
+    width:100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #000;
+}
+.signupprofile {
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.signupprofile input{
+    margin-left: 40px;
+    margin-top: 10px;
+}
+.signuppage{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+
+}
+.signupform{
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+    margin-right: 20px;
+    border: 1px solid grey;
+    border-radius: 20px;
+    
+
+}
+.signupform h2{
+   text-align: center;
+   font-size: 30px;
+    font-weight: bold;
+    background: linear-gradient(84deg, rgba(195, 34, 172, 1) 0%, rgba(45, 84, 253, 1) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+}
+.signupinput{
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+}
+.signupinput input{
+    width: 250px;
+    padding: 8px;
+    border-radius: 10px;
+    border: 1px solid grey;
+    margin-top: 10px;
+    margin-left: 20px;
+}
+.signupinput label{
+    margin-left: 10px;
+    font-size: 18px;
+}
+.signupbutton{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+.signupbutton button{
+    padding: 7px;
+    border: none;
+    background-color: rgb(25, 164, 27);
+    color: white;
+    border-radius: 10px;
+    width: 100px;
+    height: 35px;
+    font-size: 15px;
+
+}
+.signupbutton button:hover{
+    width: 120px;
+    height: 38px;
+    font-size: 16px;
+}
+.warmessage{
+    position: absolute;
+    background-color: rgba(255, 69, 69,0.9);
+    
+    border-radius: 20px;
+    display: flex;
+    width: 200px;
+}
+.warmessage p{
+    margin-top: 30px;
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+}
+.warnclose{
+    position: absolute;
+    display: flex;
+    padding-bottom: 10px;
+    
+}
+.warnclose button{
+    margin-left: 170px;
+    padding: 6px;
+    border: none;
+    width: 30px;
+    background-color: rgba(255, 69, 69, 0.9);
+    color: white;
+}
+.backtologin{
+    margin-left: 30px;
+    margin-bottom: 40px;
+}
+.backtologin p:hover{
+    cursor: pointer;
+    color: darkmagenta;
+}

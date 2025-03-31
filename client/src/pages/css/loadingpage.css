@@ -1,0 +1,27 @@
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #fff; /* Change background if needed */
+  }
+  
+  .loading-logo {
+    width: 200px; /* Initial size */
+    animation: logoBounce 1.5s infinite ease-in-out;
+  }
+  
+  @keyframes logoBounce {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(0.8);
+      opacity: 0.6;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
