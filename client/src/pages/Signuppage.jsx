@@ -1,10 +1,8 @@
-import React ,{useEffect, useState}from 'react';
+import React ,{use, useEffect, useState}from 'react';
 import "./css/signuppage.css";
-import { useNavigate } from "react-router-dom";
-import axios from 'axios';
 
 function Signuppage() {
-  const navigate = useNavigate();
+
   const [Email,setEmail]=useState("");
   const [Username,setUsername]=useState("");
   const [Name,setName]=useState("");
@@ -12,25 +10,30 @@ function Signuppage() {
   const [Cpassword,setCpassword]=useState("");
 
   const [warnmessage,setwarnmessage]=useState("");
-  
-  const [loadingbtn,setloadingbtn]=useState(false)
-  
+  const [file, setFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState("profile_default.jpg");
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+
+    
+    setFile(selectedFile);
+    
+    if (selectedFile) {
+        setPreviewUrl(URL.createObjectURL(selectedFile));
+    }
+   };
 
    const handlesignup = async()=>{
        if(!Email||!Username||!Name||!Password||!Cpassword){
-        setwarnmessage("All details are required");
-        setloadingbtn(false);
-        return;
+        setwarnmessage("All details are required")
        }
 
        if (Email) {
           const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
           if (!emailRegex.test(Email)) {
             setwarnmessage("Email must be in a valid format (example@example.com)");
-            setloadingbtn(false);
-            return;
             }
-            
         }
 
         if(Password){
@@ -38,48 +41,21 @@ function Signuppage() {
             const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
             if (!passwordRegex.test(Password)) {
                 setwarnmessage("Password must have at least 1 uppercase letter, 1 number, 1 special character, and be at least 6 characters long.");
-                setloadingbtn(false);
-                return;
             } else {
                 setwarnmessage(""); 
             }
         }
-        
         }
 
         if(Cpassword){
           if(Password){
             if(Password!==Cpassword){
-              setCpassword("");
-              setwarnmessage("Password Does not match");
-              setloadingbtn(false);
-              return;
+              setCpassword("")
+              setwarnmessage("Password Does not match")
             }
-            
           }else{
             setwarnmessage("Enter Password")
           }
-          
-        }
-
-        try{
-            const response=await axios.post("http://192.168.1.23:4000/signup",{
-              username:Username,
-              name:Name,
-              email:Email,
-              password:Password});
-
-            if(response.data.success){
-              navigate("/login")
-              
-            }else{
-              setloadingbtn(false)
-            }
-            if(response.data.message){
-              setwarnmessage(response.data.message)
-            }
-        }catch(err){
-          console.log(err)
         }
    }
 
@@ -89,7 +65,10 @@ function Signuppage() {
     <div className="signuppage">
         <div className="signupform">
           <h2>Signup!</h2>
-          
+          <div className="signupprofile">
+          <img src={previewUrl} alt="Profile Preview"/>
+          <input type="file" accept="image/*" onChange={handleFileChange}/>
+          </div>
           
           <div className="signupinput">
             <label>Email</label>
@@ -97,7 +76,7 @@ function Signuppage() {
             type='text'
             placeholder='example@gmail.com'
             value={Email}
-            onChange={(e)=>{setEmail(e.target.value.toLowerCase().trim())}}
+            onChange={(e)=>{setEmail(e.target.value)}}
             maxLength={30}
             />
           </div>
@@ -108,7 +87,7 @@ function Signuppage() {
             type='text'
             placeholder='Username'
             value={Username}
-            onChange={(e)=>{setUsername(e.target.value.toLowerCase().trim())}}
+            onChange={(e)=>{setUsername(e.target.value)}}
             maxLength={20}
             />
           </div>
@@ -119,7 +98,7 @@ function Signuppage() {
             type='text'
             placeholder='name'
             value={Name}
-            onChange={(e)=>{setName(e.target.value.trim())}}
+            onChange={(e)=>{setName(e.target.value)}}
             maxLength={20}
             />
           </div>
@@ -131,7 +110,7 @@ function Signuppage() {
             placeholder='Create Password'
             value={Password}
             maxLength={16}
-            onChange={(e)=>{setPassword(e.target.value.trim());setCpassword("")}}
+            onChange={(e)=>{setPassword(e.target.value);setCpassword("")}}
             />
           </div>
 
@@ -147,18 +126,8 @@ function Signuppage() {
           </div>
 
           <div className="signupbutton">
-            {loadingbtn ?(
-                <button>Loading...</button>
-            ):(
-              <button onClick={()=>{setloadingbtn(true);handlesignup()}}>Submit</button>
-              
-            )}
-            
+            <button onClick={handlesignup}>Submit</button>
           </div>
-          <div className="backtologin" onClick={()=>{navigate('/login')}}>
-            <p>Back to login!</p>
-          </div>
-          
         </div>
        {warnmessage &&(
         <div className="warmessage">
