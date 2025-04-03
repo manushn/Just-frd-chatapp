@@ -18,6 +18,7 @@
     "crypto-js": "^4.2.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^2.2.36",
     "mongoose": "^8.11.0",

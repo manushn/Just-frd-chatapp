@@ -38,7 +38,7 @@ Do not share it with anyone.`,
   }
 };
 
-// Route to request OTP
+
 router.post("/otpreq", async (req, res) => {
   const { email } = req.body;
 
@@ -65,7 +65,7 @@ router.post("/otpreq", async (req, res) => {
   }
 });
 
-// Route to verify OTP and reset password
+
 router.put("/verifyotp", async (req, res) => {
   const { email, otp, password } = req.body;
 
