@@ -23,7 +23,7 @@ const Generateotp = async (useremail, name) => {
     to: useremail,
     subject: "Your OTP for Password Reset",
     text: `Hi ${name} 👋, 
-Your OTP code is ${Generatedotp} for your password reset process.
+Your OTP is ${Generatedotp} for your password reset process.
 Do not share it with anyone.`,
   };
 

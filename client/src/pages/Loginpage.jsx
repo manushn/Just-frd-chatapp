@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./css/loginpage.css";
 import { useNavigate } from "react-router-dom";
-import axios from "axios"; // ✅ Added missing import
+import axios from "axios"; 
 
 function Loginpage() {
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ function Loginpage() {
         const response = await axios.post("http://192.168.1.23:4000/login", {
           username,
           password,
-        },{ withCredentials: true }
+        }
       );
 
         if (response.data.success) {
