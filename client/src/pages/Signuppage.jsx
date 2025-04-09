@@ -109,7 +109,7 @@ function Signuppage() {
             type='text'
             placeholder='example@gmail.com'
             value={Email}
-            onChange={(e)=>{setEmail(e.target.value)}}
+            onChange={(e)=>{setEmail(e.target.value.toLowerCase().trim())}}
             maxLength={30}
             />
           </div>
@@ -120,7 +120,7 @@ function Signuppage() {
             type='text'
             placeholder='Username'
             value={Username}
-            onChange={(e)=>{setUsername(e.target.value)}}
+            onChange={(e)=>{setUsername(e.target.value.toLowerCase().trim())}}
             maxLength={20}
             />
           </div>
@@ -131,7 +131,7 @@ function Signuppage() {
             type='text'
             placeholder='Name'
             value={Name}
-            onChange={(e)=>{setName(e.target.value)}}
+            onChange={(e)=>{setName(e.target.value.trim())}}
             maxLength={20}
             />
           </div>
@@ -143,7 +143,7 @@ function Signuppage() {
             placeholder='Create Password'
             value={Password}
             maxLength={16}
-            onChange={(e)=>{setPassword(e.target.value);setCpassword("")}}
+            onChange={(e)=>{setPassword(e.target.value.trim());setCpassword("")}}
             />
           </div>
 
@@ -154,7 +154,7 @@ function Signuppage() {
             placeholder='Re Enter Password'
             value={Cpassword}
             maxLength={16}
-            onChange={(e)=>setCpassword(e.target.value)}
+            onChange={(e)=>setCpassword(e.target.value.trim())}
             />
           </div>
 

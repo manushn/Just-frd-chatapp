@@ -40,7 +40,7 @@ function LoadingPage() {
 
   return (
     <div className="loading-container">
-      <img src="just-frd-logo.png" alt="Just Friend Logo" className="loading-logo" />
+      <img src="just-frd-logo1.webp" alt="Just Friend Logo" className="loading-logo" />
       {message && <p className="error-message">{message}</p>}
     </div>
   );

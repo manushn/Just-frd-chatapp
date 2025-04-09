@@ -56,7 +56,7 @@ function Loginpage() {
 
   return (
     <div className="loginfullmain">
-      {/* Popup Message */}
+      
       {isMessage && (
         <div className="popup-message">
           <div className="message-content">
