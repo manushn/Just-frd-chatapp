@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import "./css/chatdesktop.css"
 
-function ChatDesktop({ socket, messages, setmessages }) {
+function ChatDesktop({ socket,messages,setmessages,friends,setfriends}) {
   const [message, setmessage] = useState("");
   const [receiver, setreceiver] = useState("");
   const [searchvalue,setsearchvalue]=useState("");
 
+  const [searchfrd,setsearchfrd]=useState([]);
 
   useEffect(() => {
     socket.on("NewMessage", (data) => {
@@ -16,6 +17,46 @@ function ChatDesktop({ socket, messages, setmessages }) {
       socket.off("NewMessage");
     };
   }, [socket, setmessages]);
+
+  useEffect(() => {
+    if (socket) {
+      socket.emit("getFriendList");
+  
+      socket.on("FriendList", (data) => {
+        setfriends(data); 
+      });
+  
+      return () => {
+        socket.off("FriendList");
+      };
+    }
+  }, [socket,friends]);
+
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      if (searchvalue) {
+        
+        socket.emit("Searchuser", searchvalue);
+      } else {
+        setsearchfrd(""); // clear search results if input is empty
+      }
+    }, 300); // 300ms debounce
+  
+    return () => clearTimeout(delayDebounce);
+  }, [searchvalue, socket]);
+
+  useEffect(() => {
+    
+    socket.on("SearchUserDetails",(result)=>{
+      setsearchfrd("");
+      setsearchfrd(result)
+      
+    });
+  
+    return () => {
+      socket.off("SearchUserDetails");
+    };
+  }, [socket]);
 
   const Sendmessage = () => {
     if (message && receiver) {
@@ -57,12 +98,63 @@ function ChatDesktop({ socket, messages, setmessages }) {
               value={searchvalue}
               onChange={(e)=>{setsearchvalue(e.target.value.toLowerCase().trim())}}
               />
+              <div className="divideline"></div>
               <div className="leftfrdlist">
-
+                  {searchfrd ?(
+                    <div className="newfrdlists">
+                      {searchfrd && searchfrd.length > 0 ? (
+                          searchfrd.map((friend, index) => (
+                        <div key={index} 
+                        className="newfriend-item" 
+                        onClick={()=>setreceiver(friend)}
+                        style={{
+                          backgroundColor: receiver === friend ? "green" : "rgb(33, 203, 90) ",
+                          color: receiver === friend ? "black" : "white",
+                        }}
+                        >
+                            {friend}
+                        <img src='addfrd.png'/>
+                        </div>
+                      ))
+                        ) : (
+                              <div>
+                                <p>No friends yet</p>
+                                <button onClick={()=>{setsearchfrd("");setsearchvalue("")}}>Back</button>
+                              </div>
+                        )}
+                    </div>
+                  ):(
+                    <div className="savefrdlist">
+                      {friends && friends.length > 0 ? (
+                          friends.map((friend, index) => (
+                        <div key={index} 
+                        className="friend-item" 
+                        onClick={()=>setreceiver(friend)}
+                        style={{
+                          backgroundColor: receiver === friend ? "#e6f0ff" : "rgb(39, 179, 255) ",
+                          color: receiver === friend ? "black" : "white",
+                        }}
+                        >
+                            {friend}
+                        </div>
+                      ))
+                        ) : (
+                              <div>No friends yet</div>
+                        )}
+                    </div>
+                  )}
               </div>
           </div>
           <div className='deskrightchat'>
-              <h2>Chats</h2>
+              {receiver?(
+                <div className="chattoph2">
+                  <h2>{receiver}</h2>
+                </div>
+              ):(
+                <div className="chattoph2">
+                  <h2>Chats</h2>
+                </div>
+              )}
           </div>
        </div>
       

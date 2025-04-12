@@ -40,6 +40,8 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     display: inline-block;
+    padding-top: 30px;
+    padding-bottom: 20px;
 }
 .signupinput{
     margin: 10px;

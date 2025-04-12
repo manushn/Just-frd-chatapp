@@ -21,7 +21,7 @@ function LoadingPage() {
 
         if (response.data.success===true) {
           sessionStorage.setItem("islogedin", true);
-          sessionStorage.setItem("Username", response.data.username);
+          sessionStorage.setItem("username", response.data.username);
           localStorage.setItem("token",response.data.token);
           navigate("/chats");
         }

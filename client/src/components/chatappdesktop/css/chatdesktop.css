@@ -60,3 +60,43 @@
   border-radius: 10px;
   border: 1px solid grey;
 }
+.divideline {
+    margin-top: 20px;
+    border-bottom: 1px solid grey;
+    width: 90%;
+    margin-left: 12px;
+}
+.savefrdlist{
+    display: flex;
+    flex-direction: column;
+}
+.friend-item{
+    padding: 20px;
+    margin-top: 10px;
+    margin-right: 10px;
+    color: white;
+    font-weight: bold;
+    background-color: rgb(39, 179, 255);
+    border-radius: 10px;
+    font-size: 20px;
+    border: 1px solid grey;
+    cursor: pointer;
+}
+.friend-item :hover{
+    padding: 25px;
+}
+.newfriend-item{
+    padding: 20px;
+    margin-top: 10px;
+    margin-right: 10px;
+    font-weight: bold;
+    border-radius: 10px;
+    font-size: 20px;
+    border: 1px solid grey;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+}
+.newfriend-item img{
+    width: 30px;
+}

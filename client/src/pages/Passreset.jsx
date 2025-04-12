@@ -183,7 +183,7 @@ function Passreset() {
                 
             </div>
             <div className="backtologinbtn">
-              <button>Back to Login!</button>
+              <button onClick={()=>{navigate("/login")}}>Back to Login!</button>
             </div>
           </div>
         </div>
