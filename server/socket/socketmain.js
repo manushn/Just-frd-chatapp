@@ -73,7 +73,7 @@ const initializeSocket = (server) => {
 //------------------------------------------------------------------------------------------
 
 socket.on("Searchuser", async (searchuser) => {
-  console.log(`Searching for usernames containing: ${searchuser}`);
+  
 
   const requesterSocketId = ConnectedUsers[username]; 
   if (!searchuser || !requesterSocketId) {
@@ -88,7 +88,7 @@ socket.on("Searchuser", async (searchuser) => {
 
     const result = userlist.length > 0 
       ? userlist.map(user => user.username) 
-      : ["No users found"];
+      : [];
     
     io.to(requesterSocketId).emit("SearchUserDetails", result);
 
@@ -102,14 +102,17 @@ socket.on("Searchuser", async (searchuser) => {
 
 
 //------------------------------------------------------------------------------------------
-socket.on("Add Friend", async (addfriendname) => {
+socket.on("Add_Friend", async (addfriendname) => {
   console.log(`Adding friend ${addfriendname} to ${username}`);
   const requesterSocketId = ConnectedUsers[username];
 
   if (!addfriendname || !username || !requesterSocketId) {
     console.log("Invalid request: Missing data.");
     return;
+  }if(addfriendname===username){
+    return;
   }
+
 
   try {
     const user = await UserModel.findOne({ username: username });
@@ -124,7 +127,7 @@ socket.on("Add Friend", async (addfriendname) => {
    
     if (user.friends.includes(addfriendname)) {
       return io.to(requesterSocketId).emit("Responsedata", {
-        Responsedata: "User already added"
+        Responsedata: "User already Friend"
       });
     }
 
@@ -135,9 +138,8 @@ socket.on("Add Friend", async (addfriendname) => {
     );
 
    
-    return io.to(requesterSocketId).emit("Responsedata", {
-      Responsedata: "Friend added successfully"
-    });
+    const fuser = await UserModel.findOne({ username }).lean()
+    return io.to(socket.id).emit("FriendList", fuser.friends || []);
 
   } catch (err) {
     console.log(err);
@@ -168,7 +170,26 @@ socket.on("getFriendList", async () => {
 
 //------------------------------------------------------------------------------------------
 
+socket.on("removefriend",async(friendusername)=>{
+  try{
+    if(friendusername){
+      console.log(`${friendusername}remove from friend list of ${username}`)
+      await UserModel.findOneAndUpdate(
+        { username: username },
+        { $pull: { friends: friendusername } }
+      );
+       
+      const user = await UserModel.findOne({ username }).lean()
+      io.to(socket.id).emit("FriendList", user.friends || []);
+     
+    }
+    
+  }catch(err){
+    console.log(err)
+  }
+})
 
+//------------------------------------------------------------------------------------------
     socket.on("disconnect", () => {
       console.log(`❌ User disconnected: ${username}`);
       delete ConnectedUsers[username];

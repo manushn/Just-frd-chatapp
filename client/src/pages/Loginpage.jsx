@@ -75,7 +75,7 @@ function Loginpage() {
           {/* Login Form */}
           <form onSubmit={handleLogin}>
             <div className="loginformin">
-              <label>Username</label>
+              <label>Username/Email</label>
               <input
                 type="text"
                 placeholder="Username/Email"

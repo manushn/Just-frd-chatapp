@@ -3,6 +3,31 @@
     flex-direction: column;
     margin: 0px;
     
+    
+}
+.popupcon{
+    position: absolute;
+    display: flex;
+    margin-left: 40%;
+    margin-top: 5px;
+}
+.warnmessagecon{
+    display: flex;
+    background-color: rgb(250, 108, 108) ;
+    align-items: flex-start;
+    border-radius: 10px;
+}
+.warnmessagecon p{
+    padding: 20px;
+    color: white;
+}
+.warnmessagecon button{
+    background-color: rgb(250, 108, 108);
+    border: none;
+    color:white;
+    margin-top: 5px;
+    margin-right: 5px;
+    cursor: pointer;
 }
 .chattop{
     width: 100%;
@@ -32,11 +57,48 @@
     border-radius: 30px;
     margin-right: 10px;
 }
+.profile button{
+    color: red;
+    margin-left: 10px;
+    padding: 5px;
+    border-radius: 20px;
+    border: 1px solid red;
+    background-color: rgb(176, 226, 254);
+}
+.profile button:hover{
+    color: white;
+    background-color: red;
+    cursor: pointer;
+}
 .chattop h1{
     margin-left: 10px;
     margin-top: 5px;
     color: white
 }
+.chattoph2 {
+    display: flex;
+    justify-content: space-between;
+    
+}
+.chattoph2 button{
+   
+    border:1px solid red;
+    width: 100px;
+    padding: 6px;
+    margin-top: 8px;
+    margin-left: 10px;
+    color: red;
+    border-radius: 20px;
+    background-color:rgb(218, 240, 244);
+    align-items: center;
+    justify-content: center;
+}
+.chattoph2 button:hover{
+    background-color: red;
+    color: white;
+    cursor:pointer;
+}
+
 .chatbottom{
     display: flex;
     background-color: rgb(218, 240, 244);
@@ -66,9 +128,18 @@
     width: 90%;
     margin-left: 12px;
 }
+.newfrdlists{
+    margin-left: 10px;
+}
+.newfrdlists h4{
+margin-top: 10px;
+margin-left: 10px;
+}
 .savefrdlist{
     display: flex;
     flex-direction: column;
+    margin-top: 10px;
+    margin-left: 10px;
 }
 .friend-item{
     padding: 20px;
@@ -99,4 +170,37 @@
 }
 .newfriend-item img{
     width: 30px;
+}
+.nonewfrdlists {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.confirmmessage{
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(184, 240, 254);
+    padding: 20px;
+    border-radius: 10px;
+}
+.confirmmessagebtn{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+.confirmmessagebtn button{
+    border: none;
+    background-color: rgb(184, 240, 254);
+    border: .5px solid red;
+    padding: 5px;
+    color: red;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.confirmmessagebtn button:hover{
+    border: none;
+    background-color: red;
+    color: white;
 }
