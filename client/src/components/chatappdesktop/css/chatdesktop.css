@@ -1,147 +1,162 @@
-.desktopchat{
+.desktopchat {
     display: flex;
     flex-direction: column;
-    margin: 0px;
-    
-    
-}
-.popupcon{
+    margin: 0;
+  }
+  
+  .popupcon {
     position: absolute;
     display: flex;
     margin-left: 40%;
     margin-top: 5px;
-}
-.warnmessagecon{
+  }
+  
+  .warnmessagecon {
     display: flex;
-    background-color: rgb(250, 108, 108) ;
+    background-color: rgb(250, 108, 108);
     align-items: flex-start;
     border-radius: 10px;
-}
-.warnmessagecon p{
+  }
+  
+  .warnmessagecon p {
     padding: 20px;
     color: white;
-}
-.warnmessagecon button{
+  }
+  
+  .warnmessagecon button {
     background-color: rgb(250, 108, 108);
     border: none;
-    color:white;
+    color: white;
     margin-top: 5px;
     margin-right: 5px;
     cursor: pointer;
-}
-.chattop{
+  }
+  
+  .chattop {
     width: 100%;
     height: 60px;
     background-color: rgb(39, 179, 255);
     margin: 0;
     display: flex;
     justify-content: space-between;
-}
-.chatlogo{
+  }
+  
+  .chatlogo {
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.profile{
+  }
+  
+  .profile {
     display: flex;
     justify-content: center;
     align-items: center;
     margin-right: 40px;
     cursor: pointer;
     color: white;
-}
-.profile img{
+  }
+  
+  .profile img {
     width: 40px;
     background-color: white;
     border-radius: 30px;
     margin-right: 10px;
-}
-.profile button{
+  }
+  
+  .profile button {
     color: red;
     margin-left: 10px;
     padding: 5px;
     border-radius: 20px;
     border: 1px solid red;
     background-color: rgb(176, 226, 254);
-}
-.profile button:hover{
+  }
+  
+  .profile button:hover {
     color: white;
     background-color: red;
     cursor: pointer;
-}
-.chattop h1{
+  }
+  
+  .chattop h1 {
     margin-left: 10px;
     margin-top: 5px;
-    color: white
-}
-.chattoph2 {
+    color: white;
+  }
+  
+  .chattoph2 {
     display: flex;
     justify-content: space-between;
-    
-}
-.chattoph2 button{
-   
-    border:1px solid red;
+    padding: 10px;
+  }
+  
+  .chattoph2 button {
+    border: 1px solid red;
     width: 100px;
     padding: 6px;
     margin-top: 8px;
-    margin-left: 10px;
     color: red;
     border-radius: 20px;
-    background-color:rgb(218, 240, 244);
-    align-items: center;
-    justify-content: center;
-}
-.chattoph2 button:hover{
+    background-color: rgb(218, 240, 244);
+  }
+  
+  .chattoph2 button:hover {
     background-color: red;
     color: white;
-    cursor:pointer;
-}
-
-.chatbottom{
+    cursor: pointer;
+  }
+  
+  .chatbottom {
     display: flex;
     background-color: rgb(218, 240, 244);
-    height: 100vh;
-}
-.deskleftchat{
+    height: 93vh;
+  }
+  
+  .deskleftchat {
     width: 350px;
     border-right: 1px solid grey;
     margin-left: 4px;
-}
-.desktopchat h2{
+  }
+  
+  .desktopchat h2 {
     margin-left: 10px;
     margin-top: 15px;
-    font-family:Georgia, 'Times New Roman', Times, serif
-}
-.deskleftchat input{
-  width: 90%;
-  margin-left: 15px;
-  margin-top: 20px;
-  padding: 8px;
-  border-radius: 10px;
-  border: 1px solid grey;
-}
-.divideline {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+  }
+  
+  .deskleftchat input {
+    width: 90%;
+    margin-left: 15px;
+    margin-top: 20px;
+    padding: 8px;
+    border-radius: 10px;
+    border: 1px solid grey;
+  }
+  
+  .divideline {
     margin-top: 20px;
     border-bottom: 1px solid grey;
     width: 90%;
     margin-left: 12px;
-}
-.newfrdlists{
+  }
+  
+  .newfrdlists {
     margin-left: 10px;
-}
-.newfrdlists h4{
-margin-top: 10px;
-margin-left: 10px;
-}
-.savefrdlist{
+  }
+  
+  .newfrdlists h4 {
+    margin-top: 10px;
+    margin-left: 10px;
+  }
+  
+  .savefrdlist {
     display: flex;
     flex-direction: column;
     margin-top: 10px;
     margin-left: 10px;
-}
-.friend-item{
+  }
+  
+  .friend-item {
     padding: 20px;
     margin-top: 10px;
     margin-right: 10px;
@@ -152,11 +167,13 @@ margin-left: 10px;
     font-size: 20px;
     border: 1px solid grey;
     cursor: pointer;
-}
-.friend-item :hover{
-    padding: 25px;
-}
-.newfriend-item{
+  }
+  
+  .friend-item:hover {
+    padding: 20px;
+  }
+  
+  .newfriend-item {
     padding: 20px;
     margin-top: 10px;
     margin-right: 10px;
@@ -167,40 +184,143 @@ margin-left: 10px;
     cursor: pointer;
     display: flex;
     justify-content: space-between;
-}
-.newfriend-item img{
+  }
+  
+  .newfriend-item img {
     width: 30px;
-}
-.nonewfrdlists {
+  }
+  
+  .nonewfrdlists {
     display: flex;
     justify-content: center;
     align-items: center;
     margin-top: 20px;
-}
-
-.confirmmessage{
+  }
+  
+  .confirmmessage {
     display: flex;
     flex-direction: column;
     background-color: rgb(184, 240, 254);
     padding: 20px;
     border-radius: 10px;
-}
-.confirmmessagebtn{
+  }
+  
+  .confirmmessagebtn {
     display: flex;
     justify-content: space-between;
     margin-top: 15px;
-}
-.confirmmessagebtn button{
+  }
+  
+  .confirmmessagebtn button {
     border: none;
     background-color: rgb(184, 240, 254);
-    border: .5px solid red;
+    border: 0.5px solid red;
     padding: 5px;
     color: red;
     border-radius: 10px;
     cursor: pointer;
-}
-.confirmmessagebtn button:hover{
+  }
+  
+  .confirmmessagebtn button:hover {
     border: none;
     background-color: red;
     color: white;
-}
+  }
+  .deskrightchat{
+    width: 100%;
+  }
+  .chat {
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+    height: 85vh;
+  }
+  
+  .chattab {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    
+  }
+  
+  .chattabtop {
+    flex: 1;
+    overflow-y:auto;
+    max-height: 76vh;
+    padding: 10px;
+    max-width: 95%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+  }
+  
+  .message {
+    max-width: 60%;
+    padding: 8px 12px;
+    border-radius: 10px;
+    position: relative;
+  }
+  
+  .message.sent {
+    background-color: #007bff;
+    color: white;
+    align-self: flex-end;
+  }
+  
+  .message.received {
+    background-color: #9b65ec;
+    color: white;
+    align-self: flex-start;
+  }
+  
+  .timestamp {
+    font-size: 0.7em;
+    color: rgb(217, 215, 215);
+    display: block;
+    margin-top: 5px;
+  }
+  .messageinfo{
+    display: flex;
+  }
+  
+  .seen {
+    font-size: 0.7em;
+    color: rgb(217, 215, 215);
+    margin-left: 5px;
+    text-align: center;
+    margin-top: 5px;
+  }
+  
+  .typing-indicator {
+    align-self: flex-start;
+    font-style: italic;
+    color: #666;
+    font-size: 0.9em;
+    padding: 5px 10px;
+  }
+  
+  .chattabbottom {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    background-color: rgb(183, 234, 246);
+    border-top: 1px solid rgb(168, 168, 168);
+  }
+  
+  .chattabbottom input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  .chattabbottom button {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 20px;
+  }

@@ -2,8 +2,10 @@ const { Server } = require("socket.io");
 const jwt = require("jsonwebtoken");
 const CryptoJS = require("crypto-js");
 const dotenv = require("dotenv");
+const mongoose = require("mongoose");
 
-const UserModel=require("../schemas/userschema");
+const UserModel = require("../schemas/userschema");
+const MessageModel = require("../schemas/messageschema");
 
 dotenv.config();
 
@@ -13,15 +15,12 @@ const initializeSocket = (server) => {
   const io = new Server(server, {
     cors: {
       origin: ["http://192.168.1.23:5173", "http://localhost:5173"],
-      
     },
   });
 
   // Middleware to authenticate using encrypted JWT
   io.use((socket, next) => {
     const token = socket.handshake.auth?.token;
-    console.log("Token received");
-
     if (!token) {
       console.log("No token provided");
       return next(new Error("Authentication error: Token required"));
@@ -54,142 +53,161 @@ const initializeSocket = (server) => {
 
     console.log(`✅ User connected: ${username} (${socket.id})`);
 
-
-//------------------------------------------------------------------------------------------
-    socket.on("sendMessage", (receiver, messagedata) => {
-      console.log(`📨 ${username} ➡️ ${receiver}: ${messagedata}`);
-
-      const receiverSocketId = ConnectedUsers[receiver];
-      if (receiverSocketId) {
-        io.to(receiverSocketId).emit("NewMessage", {
+    // Send Message
+    socket.on("sendMessage", async (receiver, message) => {
+      try {
+        const newMessage = new MessageModel({
           sender: username,
           receiver,
-          message: messagedata,
+          message,
+          timestamp: new Date(),
+          seen: false,
         });
-      } else {
-        console.log("❌ Receiver not connected");
+
+        await newMessage.save();
+
+        // Emit to sender and receiver
+        const receiverSocketId = ConnectedUsers[receiver];
+        io.to(socket.id).emit("NewMessage", newMessage);
+        if (receiverSocketId) {
+          io.to(receiverSocketId).emit("NewMessage", newMessage);
+        } else {
+          console.log(`Receiver ${receiver} not connected`);
+        }
+      } catch (err) {
+        console.error("Error sending message:", err);
       }
     });
-//------------------------------------------------------------------------------------------
 
-socket.on("Searchuser", async (searchuser) => {
-  
+    // Mark Messages as Seen
+    socket.on("markSeen", async (receiver) => {
+      try {
+        // Update unseen messages from receiver to user
+        await MessageModel.updateMany(
+          { sender: receiver, receiver: username, seen: false },
+          { $set: { seen: true, seenAt: new Date() } }
+        );
 
-  const requesterSocketId = ConnectedUsers[username]; 
-  if (!searchuser || !requesterSocketId) {
-    console.log("Invalid search request: Missing search query or requester socket ID.");
-    return;
-  }
+        // Fetch updated messages for the conversation
+        const updatedMessages = await MessageModel.find({
+          $or: [
+            { sender: username, receiver },
+            { sender: receiver, receiver: username },
+          ],
+        }).lean();
 
-  try {
-    const userlist = await UserModel.find({
-      username: { $regex: searchuser, $options: "i" } // contains search value (case-insensitive)
+        io.to(socket.id).emit("MessagesUpdated", updatedMessages);
+      } catch (err) {
+        console.error("Error marking messages as seen:", err);
+      }
     });
 
-    const result = userlist.length > 0 
-      ? userlist.map(user => user.username) 
-      : [];
-    
-    io.to(requesterSocketId).emit("SearchUserDetails", result);
-
-  } catch (err) {
-    console.error("Error during user search:", err);
-    io.to(requesterSocketId).emit("SearchUserDetails", {
-      error: "An error occurred while searching"
+    // Typing Event
+    socket.on("typing", (receiver) => {
+      const receiverSocketId = ConnectedUsers[receiver];
+      if (receiverSocketId) {
+        io.to(receiverSocketId).emit("typings", username);
+      }
     });
-  }
-});
-
-
-//------------------------------------------------------------------------------------------
-socket.on("Add_Friend", async (addfriendname) => {
-  console.log(`Adding friend ${addfriendname} to ${username}`);
-  const requesterSocketId = ConnectedUsers[username];
-
-  if (!addfriendname || !username || !requesterSocketId) {
-    console.log("Invalid request: Missing data.");
-    return;
-  }if(addfriendname===username){
-    return;
-  }
-
-
-  try {
-    const user = await UserModel.findOne({ username: username });
-    const feduser = await UserModel.findOne({ username: addfriendname });
-
-    if (!feduser) {
-      return io.to(requesterSocketId).emit("Responsedata", {
-        Responsedata: "Username not found"
-      });
-    }
-
-   
-    if (user.friends.includes(addfriendname)) {
-      return io.to(requesterSocketId).emit("Responsedata", {
-        Responsedata: "User already Friend"
-      });
-    }
 
     
-    await UserModel.findOneAndUpdate(
-      { username: username },
-      { $addToSet: { friends: addfriendname } }
-    );
+    // Search Users
+    socket.on("Searchuser", async (searchuser) => {
+      const requesterSocketId = ConnectedUsers[username];
+      if (!searchuser || !requesterSocketId) {
+        console.log("Invalid search request: Missing search query or requester socket ID.");
+        return;
+      }
 
-   
-    const fuser = await UserModel.findOne({ username }).lean()
-    return io.to(socket.id).emit("FriendList", fuser.friends || []);
+      try {
+        const userlist = await UserModel.find({
+          username: { $regex: searchuser, $options: "i" },
+        });
 
-  } catch (err) {
-    console.log(err);
-    io.to(requesterSocketId).emit("Responsedata", {
-      Responsedata: "An error occurred while adding friend"
+        const result = userlist.length > 0
+          ? userlist.map(user => user.username)
+          : [];
+
+        io.to(requesterSocketId).emit("SearchUserDetails", result);
+      } catch (err) {
+        console.error("Error during user search:", err);
+        io.to(requesterSocketId).emit("SearchUserDetails", []);
+      }
     });
-  }
-});
 
+    // Add Friend
+    socket.on("Add_Friend", async (addfriendname) => {
+      console.log(`Adding friend ${addfriendname} to ${username}`);
+      const requesterSocketId = ConnectedUsers[username];
 
-//------------------------------------------------------------------------------------------
+      if (!addfriendname || !username || !requesterSocketId || addfriendname === username) {
+        console.log("Invalid request: Missing data or same user.");
+        return io.to(requesterSocketId).emit("Responsedata", {
+          Responsedata: "Invalid request",
+        });
+      }
 
-socket.on("getFriendList", async () => {
-  try {
-    const user = await UserModel.findOne({ username }).lean();
+      try {
+        const user = await UserModel.findOne({ username });
+        const feduser = await UserModel.findOne({ username: addfriendname });
 
-    if (!user) {
-      return io.to(socket.id).emit("FriendList", []);
-    }
+        if (!feduser) {
+          return io.to(requesterSocketId).emit("Responsedata", {
+            Responsedata: "Username not found",
+          });
+        }
 
-    // emit the list of friends
-    io.to(socket.id).emit("FriendList", user.friends || []);
-  } catch (err) {
-    console.error("Error fetching friend list:", err);
-    io.to(socket.id).emit("FriendList", []);
-  }
-});
+        if (user.friends.includes(addfriendname)) {
+          return io.to(requesterSocketId).emit("Responsedata", {
+            Responsedata: "User already Friend",
+          });
+        }
 
-//------------------------------------------------------------------------------------------
+        await UserModel.findOneAndUpdate(
+          { username },
+          { $addToSet: { friends: addfriendname } }
+        );
 
-socket.on("removefriend",async(friendusername)=>{
-  try{
-    if(friendusername){
-      console.log(`${friendusername}remove from friend list of ${username}`)
-      await UserModel.findOneAndUpdate(
-        { username: username },
-        { $pull: { friends: friendusername } }
-      );
-       
-      const user = await UserModel.findOne({ username }).lean()
-      io.to(socket.id).emit("FriendList", user.friends || []);
-     
-    }
-    
-  }catch(err){
-    console.log(err)
-  }
-})
+        const fuser = await UserModel.findOne({ username }).lean();
+        io.to(socket.id).emit("FriendList", fuser.friends || []);
+      } catch (err) {
+        console.error("Error adding friend:", err);
+        io.to(requesterSocketId).emit("Responsedata", {
+          Responsedata: "An error occurred while adding friend",
+        });
+      }
+    });
 
-//------------------------------------------------------------------------------------------
+    // Get Friend List
+    socket.on("getFriendList", async () => {
+      try {
+        const user = await UserModel.findOne({ username }).lean();
+        io.to(socket.id).emit("FriendList", user.friends || []);
+      } catch (err) {
+        console.error("Error fetching friend list:", err);
+        io.to(socket.id).emit("FriendList", []);
+      }
+    });
+
+    // Remove Friend
+    socket.on("removefriend", async (friendusername) => {
+      try {
+        if (friendusername) {
+          console.log(`${friendusername} removed from friend list of ${username}`);
+          await UserModel.findOneAndUpdate(
+            { username },
+            { $pull: { friends: friendusername } }
+          );
+
+          const user = await UserModel.findOne({ username }).lean();
+          io.to(socket.id).emit("FriendList", user.friends || []);
+        }
+      } catch (err) {
+        console.error("Error removing friend:", err);
+      }
+    });
+
+    // Disconnect
     socket.on("disconnect", () => {
       console.log(`❌ User disconnected: ${username}`);
       delete ConnectedUsers[username];
