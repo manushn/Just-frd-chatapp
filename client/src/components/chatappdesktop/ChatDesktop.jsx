@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef,useState, useEffect } from 'react';
 import "./css/chatdesktop.css";
 import { useNavigate } from "react-router-dom";
+
 
 function ChatDesktop({ socket, messages, setmessages, friends, setfriends }) {
   const navigate = useNavigate();
@@ -10,23 +11,75 @@ function ChatDesktop({ socket, messages, setmessages, friends, setfriends }) {
   const [searchvalue, setsearchvalue] = useState("");
   const [searchfrd, setsearchfrd] = useState([]);
   const [addfriendname, setaddfriendname] = useState("");
+
   const [warnmessage, setwarnmessage] = useState("");
   const [popup, setpopup] = useState(false);
   const [confirmmessage, setconfirmmessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
 
-  // Handle new messages from the server
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+
+  const chatContainerRef = useRef();
+  const messagesEndRef = useRef(null);
+  const [hasInitialized, setHasInitialized] = useState(false);
+
+
   useEffect(() => {
-    socket.on("NewMessage", (data) => {
-      setmessages((prev) => [...prev, data]);
+    if (receiver) {
+      setmessages([]); 
+      fetchMessages(1);
+    }
+  }, [receiver]);
+
+  useEffect(() => {
+    if (messages.length > 0&& messages.length<21) {
+      scrollToBottom(); 
+      const timeout = setTimeout(() => {
+        setHasInitialized(true); 
+      }, 1500); 
+  
+      return () => clearTimeout(timeout);
+    }
+  }, [messages]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const fetchMessages = (pageToLoad) => {
+    socket.emit("Allmessages", { receiver, page: pageToLoad, limit: 20 });
+  
+    socket.once("AllNewMessages", (newMessages) => {
+      if (newMessages.length === 0) setHasMore(false);
+  
+      setmessages((prev) => [...newMessages, ...prev]); 
+     
+      setTimeout(() => {
+        if (pageToLoad === 1) {
+          chatContainerRef.current?.scrollTo({
+            top: chatContainerRef.current.scrollHeight,
+            behavior: "smooth",
+          });
+        }
+      }, 100);
     });
+  };
 
-    return () => {
-      socket.off("NewMessage");
-    };
-  }, [socket, setmessages]);
+  const handleScroll = () => {
+    const el = chatContainerRef.current;
+    if (!el) return;
+    if (el.scrollTop === 0 && hasInitialized) {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchMessages(nextPage);
+    }
+    
+  };
 
+ 
 
+//---------------------------------------------------------------------------------------------------------------
 
   // Fetch friend list
   useEffect(() => {
@@ -41,12 +94,12 @@ function ChatDesktop({ socket, messages, setmessages, friends, setfriends }) {
       };
     }
   }, [socket]);
-
+//---------------------------------------------------------------------------------------------------------------
   // Reset receiver when friends list changes
   useEffect(() => {
     setreceiver("");
   }, [friends]);
-
+//---------------------------------------------------------------------------------------------------------------
   // Handle search for new friends
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
@@ -59,7 +112,7 @@ function ChatDesktop({ socket, messages, setmessages, friends, setfriends }) {
 
     return () => clearTimeout(delayDebounce);
   }, [searchvalue, socket]);
-
+//---------------------------------------------------------------------------------------------------------------
   // Receive search results
   useEffect(() => {
     socket.on("SearchUserDetails", (result) => {
@@ -70,45 +123,64 @@ function ChatDesktop({ socket, messages, setmessages, friends, setfriends }) {
       socket.off("SearchUserDetails");
     };
   }, [socket]);
+//---------------------------------------------------------------------------------------------------------------
+  
+  
 
-  // Handle typing and seen status for the selected receiver
-  useEffect(() => {
-    if (receiver) {
-      // Mark messages as seen
-      socket.emit("markSeen", receiver);
-      socket.on("MessagesUpdated", (updatedMessages) => {
-        setmessages(updatedMessages);
-      });
+  useEffect(()=>{
+     socket.emit("markSeen", receiver);
+      socket.on("MessagesUpdated", (updatedMsg) => {
+        setmessage((prevMessages) => {
+         
+          if (!Array.isArray(prevMessages)) return prevMessages;
+    
+          return prevMessages.map((msg) => {
+            const updated = updatedMsg.find((m) => m._id === msg._id);
+            return updated ? { ...msg, seen: updated.seen } : msg;
+          });
+        });
+      }); 
 
-      // Handle typing events
-      socket.on("typings", (sender) => {
-        if (sender === receiver) {
-          setIsTyping(true);
-          setTimeout(() => setIsTyping(false), 4000);
-        }
-      });
-
-      return () => {
-        socket.off("MessagesUpdated");
-        socket.off("typings");
-      };
+  socket.on("typings", (sender) => {
+    if (sender === receiver) {
+      setIsTyping(true);
+      setTimeout(() => setIsTyping(false), 4000);
     }
-  }, [receiver, socket,messages]);
+  });
 
+  return () => {
+    socket.off("MessagesUpdated");
+    socket.off("typings");
+  };
+},[receiver,messages,isTyping])
+
+useEffect(()=>{
+  socket.on("NewMessage", (newMessage) => {
+    console.log(newMessage)
+    setmessages((prev) => [ ...prev,newMessage]); 
+
+  return () => {
+    socket.off("NewMessage");
+    
+  };
+   })
+ },[messages,socket])
+//---------------------------------------------------------------------------------------------------------------
   // Auto-scroll to the latest message
   useEffect(() => {
     const chatMessages = document.querySelector(".chattabtop");
-  
-    if (chatMessages) {
-      const isAtBottom =
-        chatMessages.scrollHeight - chatMessages.scrollTop <= chatMessages.clientHeight + 50;
-  
-      if (isAtBottom) {
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }
-    }
-  }, [messages, isTyping]);
 
+  if (chatMessages) {
+    const threshold = 100; // pixels from bottom
+    const isAtBottom =
+      chatMessages.scrollHeight - chatMessages.scrollTop - chatMessages.clientHeight < threshold;
+
+    if (isAtBottom) {
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+  }
+  }, [messages, isTyping]);
+//---------------------------------------------------------------------------------------------------------------
   // Send a message
   const Sendmessage = () => {
     if (message && receiver) {
@@ -120,7 +192,7 @@ function ChatDesktop({ socket, messages, setmessages, friends, setfriends }) {
       alert("Enter both message and receiver");
     }
   };
-
+//---------------------------------------------------------------------------------------------------------------
   // Add a friend
   const Savefrd = () => {
     if (addfriendname) {
@@ -130,7 +202,7 @@ function ChatDesktop({ socket, messages, setmessages, friends, setfriends }) {
       setsearchfrd([]);
     }
   };
-
+//---------------------------------------------------------------------------------------------------------------
   // Remove a friend
   const deletefrd = () => {
     if (receiver) {
@@ -138,7 +210,7 @@ function ChatDesktop({ socket, messages, setmessages, friends, setfriends }) {
       setreceiver(""); // Clear receiver after removing friend
     }
   };
-
+//---------------------------------------------------------------------------------------------------------------
   return (
     <div className='desktopchat'>
       <div className="chattop">
@@ -220,7 +292,7 @@ function ChatDesktop({ socket, messages, setmessages, friends, setfriends }) {
                 </button>
               </div>
               <div className="chattab">
-                <div className="chattabtop">
+                <div className="chattabtop" onScroll={handleScroll} ref={chatContainerRef}>
                   {messages
                     .filter(
                       (msg) =>
@@ -249,6 +321,7 @@ function ChatDesktop({ socket, messages, setmessages, friends, setfriends }) {
                       <p>{receiver} is typing...</p>
                     </div>
                   )}
+                  <div ref={messagesEndRef} />
                 </div>
                 <div className="chattabbottom">
                   <input
@@ -260,7 +333,12 @@ function ChatDesktop({ socket, messages, setmessages, friends, setfriends }) {
                         socket.emit("typing", receiver);
                       }
                     }}
-                    
+                    onKeyDown={(e)=>{
+                      if(e.key==="Enter" && !e.shiftKey){
+                        e.preventDefault();
+                        Sendmessage();
+                      };
+                    }}
                   />
                   <button onClick={Sendmessage}>Send</button>
                 </div>

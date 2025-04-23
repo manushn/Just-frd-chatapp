@@ -109,11 +109,11 @@
   .chatbottom {
     display: flex;
     background-color: rgb(218, 240, 244);
-    height: 93vh;
+    height: 92vh;
   }
   
   .deskleftchat {
-    width: 350px;
+    width: 300px;
     border-right: 1px solid grey;
     margin-left: 4px;
   }
@@ -233,7 +233,7 @@
     display: flex;
     flex-direction: column;
     max-width: 100%;
-    height: 85vh;
+    height: 95vh;
   }
   
   .chattab {
@@ -246,7 +246,7 @@
   .chattabtop {
     flex: 1;
     overflow-y:auto;
-    max-height: 76vh;
+    max-height: 75vh;
     padding: 10px;
     max-width: 95%;
     display: flex;
@@ -302,17 +302,32 @@
   
   .chattabbottom {
     display: flex;
-    gap: 10px;
-    padding: 10px;
-    background-color: rgb(183, 234, 246);
-    border-top: 1px solid rgb(168, 168, 168);
+  position: absolute;
+  bottom: 2%; /* Stick to bottom with 10px space */
+  left: 29%;
+  
+  
+
+  justify-content: space-between; /* better than baseline for chat input */
+  align-items: flex-end;
+  gap: 10px;
+  padding: 10px;
+  width: 60%;
+  background-color: white;
+  border: 1px solid rgb(168, 168, 168);
+  border-radius: 20px;
   }
   
   .chattabbottom input {
     flex: 1;
     padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    border: none;
+  }
+  .chatbottom input:focus,
+  textarea:focus {
+    outline: none;
+    box-shadow: none;
+    border: none; 
   }
   
   .chattabbottom button {

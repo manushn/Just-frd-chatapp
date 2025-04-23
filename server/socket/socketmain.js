@@ -79,24 +79,56 @@ const initializeSocket = (server) => {
       }
     });
 
+    socket.on("Allmessages", async ({ receiver, page = 1, limit = 20 }) => {
+      if (receiver && username) {
+        try {
+          const skip = (page - 1) * limit;
+    
+          const updatedMessages = await MessageModel.find({
+            $or: [
+              { sender: username, receiver },
+              { sender:receiver, receiver: username },
+            ],
+          })
+            .sort({ timestamp: -1 }) 
+            .skip(skip)
+            .limit(limit)
+            .lean();
+    
+         
+          io.to(socket.id).emit("AllNewMessages", updatedMessages.reverse());
+        } catch (err) {
+          console.log("Error in all message:",err);
+        }
+      }
+    });
+
     // Mark Messages as Seen
     socket.on("markSeen", async (receiver) => {
       try {
         // Update unseen messages from receiver to user
-        await MessageModel.updateMany(
+        const updated=await MessageModel.updateMany(
           { sender: receiver, receiver: username, seen: false },
           { $set: { seen: true, seenAt: new Date() } }
         );
+        if(updated.modifiedCount>0){
+          console.log("Messages marked as seen:", updated.modifiedCount);
+          const updatedMessages = await MessageModel.find({
+            $or: [
+              { sender: username, receiver },
+              { sender: receiver, receiver: username },
+            ],
+          })
+          .sort({timestamp:-1})
+          .limit(updated.n)
+          .lean();
+  
+          io.to(socket.id).emit("MessagesUpdated", updatedMessages);
+          io.to(ConnectedUsers[receiver]).emit("MessagesUpdated", updatedMessages)
+        }
 
         // Fetch updated messages for the conversation
-        const updatedMessages = await MessageModel.find({
-          $or: [
-            { sender: username, receiver },
-            { sender: receiver, receiver: username },
-          ],
-        }).lean();
-
-        io.to(socket.id).emit("MessagesUpdated", updatedMessages);
+        
       } catch (err) {
         console.error("Error marking messages as seen:", err);
       }
