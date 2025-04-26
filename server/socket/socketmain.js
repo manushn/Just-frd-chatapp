@@ -95,8 +95,12 @@ const initializeSocket = (server) => {
             .limit(limit)
             .lean();
     
-         
+         if(page===1){
           io.to(socket.id).emit("AllNewMessages", updatedMessages.reverse());
+         }else{
+          io.to(socket.id).emit("AlloldMessages", updatedMessages.reverse());
+         }
+          
         } catch (err) {
           console.log("Error in all message:",err);
         }
@@ -120,7 +124,7 @@ const initializeSocket = (server) => {
             ],
           })
           .sort({timestamp:-1})
-          .limit(updated.n)
+          .limit(updated.modifiedCount)
           .lean();
   
           io.to(socket.id).emit("MessagesUpdated", updatedMessages);
