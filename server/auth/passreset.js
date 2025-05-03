@@ -30,7 +30,7 @@ Do not share it with anyone.`,
   try {
     let info = await transporter.sendMail(mailOptions);
     userotps[useremail] = Generatedotp;
-    console.log("OTP sent: " + info.response);
+    
     return Generatedotp;
   } catch (error) {
     console.error("Error sending OTP email:", error);

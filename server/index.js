@@ -18,7 +18,7 @@ const app = express();
 const server = http.createServer(app);
 
 app.use(cors({
-  origin: ["http://192.168.1.23:5173", "http://localhost:5173"]
+  origin: [process.env.FRONTEND_URL]
 }));
 app.use(express.json());
 
@@ -29,12 +29,9 @@ mongoose.connect(MONGO_URI, {
   useUnifiedTopology: true,
 })
   .then(() => {
-    console.log("✅ Connected to MongoDB Atlas");
-
-    // ✅ CRON SHOULD BE INITIALIZED INSIDE .then()
-    console.log("📅 Initializing cron job...");
+    
     cron.schedule("* * * * *", async () => {
-      console.log("🕐 Cron job running...");
+     
 
       const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
@@ -46,15 +43,13 @@ mongoose.connect(MONGO_URI, {
 
         if (result.deletedCount > 0) {
           console.log(`${result.deletedCount} old seen messages deleted`);
-        } else {
-          console.log("🗑️ No messages to delete");
-        }
+        } 
       } catch (err) {
-        console.error("❌ Error deleting old seen messages:", err);
+        console.error("Error deleting old seen messages:", err);
       }
     });
   })
-  .catch((err) => console.error("❌ MongoDB Connection Error:", err));
+  .catch((err) => console.error("MongoDB Connection Error:", err));
 
 // Routes and socket init
 app.use('/', Signup);
@@ -65,5 +60,5 @@ initializeSocket(server);
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
-  console.log(`✅ Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });

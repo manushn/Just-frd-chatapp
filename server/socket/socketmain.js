@@ -14,7 +14,7 @@ const ConnectedUsers = {};
 const initializeSocket = (server) => {
   const io = new Server(server, {
     cors: {
-      origin: ["http://192.168.1.23:5173", "http://localhost:5173"],
+      origin: [process.env.FRONTEND_URL],
     },
   });
 
@@ -22,7 +22,7 @@ const initializeSocket = (server) => {
   io.use((socket, next) => {
     const token = socket.handshake.auth?.token;
     if (!token) {
-      console.log("No token provided");
+      
       return next(new Error("Authentication error: Token required"));
     }
 
@@ -51,7 +51,7 @@ const initializeSocket = (server) => {
     const username = socket.user.username;
     ConnectedUsers[username] = socket.id;
 
-    console.log(`✅ User connected: ${username} (${socket.id})`);
+   
 
     // Send Message
     socket.on("sendMessage", async (receiver, message) => {
@@ -71,9 +71,7 @@ const initializeSocket = (server) => {
         io.to(socket.id).emit("NewMessage", newMessage);
         if (receiverSocketId) {
           io.to(receiverSocketId).emit("NewMessage", newMessage);
-        } else {
-          console.log(`Receiver ${receiver} not connected`);
-        }
+        } 
       } catch (err) {
         console.error("Error sending message:", err);
       }
@@ -229,7 +227,7 @@ const initializeSocket = (server) => {
     socket.on("removefriend", async (friendusername) => {
       try {
         if (friendusername) {
-          console.log(`${friendusername} removed from friend list of ${username}`);
+          
           await UserModel.findOneAndUpdate(
             { username },
             { $pull: { friends: friendusername } }
@@ -245,7 +243,7 @@ const initializeSocket = (server) => {
 
     // Disconnect
     socket.on("disconnect", () => {
-      console.log(`❌ User disconnected: ${username}`);
+      
       delete ConnectedUsers[username];
     });
   });

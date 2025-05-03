@@ -7,7 +7,7 @@ const UserModel=require('../schemas/userschema');
 
 router.post("/signup",async (req,res)=>{
     const {username,name,email,password}=req.body;
-    console.log(username,name,email,password)
+    
 
     if(!username||!name||!email||!password){
         return res.status(203).json({message:"All fields are required"});
