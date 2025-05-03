@@ -79,7 +79,7 @@ function Loginpage() {
               <input
                 type="text"
                 placeholder="Username/Email"
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => setUsername(e.target.value.trim().toLowerCase())}
                 value={username}
               />
             </div>
@@ -89,7 +89,7 @@ function Loginpage() {
               <input
                 type="password"
                 placeholder="Password"
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value.trim())}
                 value={password}
               />
             </div>
