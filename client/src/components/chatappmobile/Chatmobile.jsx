@@ -150,7 +150,7 @@ function ChatDesktop({ socket, messages, setmessages, friends, setfriends }) {
     socket.on("typings", (senderTyping) => {
       if (senderTyping === receiver) {
         setIsTyping(true);
-        setTimeout(() => setIsTyping(false), 1000);
+        setTimeout(() => setIsTyping(false), 2000);
       }
     });
 

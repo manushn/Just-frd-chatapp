@@ -14,7 +14,9 @@ const ConnectedUsers = {};
 const initializeSocket = (server) => {
   const io = new Server(server, {
     cors: {
-      origin: [process.env.FRONTEND_URL],
+      origin: "*", 
+      methods: ["GET", "POST", "PUT"],
+      credentials: true,
     },
   });
 
@@ -114,7 +116,7 @@ const initializeSocket = (server) => {
           { $set: { seen: true, seenAt: new Date() } }
         );
         if(updated.modifiedCount>0){
-          console.log("Messages marked as seen:", updated.modifiedCount);
+          
           const updatedMessages = await MessageModel.find({
             $or: [
               { sender: username, receiver },
@@ -171,7 +173,7 @@ const initializeSocket = (server) => {
 
     // Add Friend
     socket.on("Add_Friend", async (addfriendname) => {
-      console.log(`Adding friend ${addfriendname} to ${username}`);
+      
       const requesterSocketId = ConnectedUsers[username];
 
       if (!addfriendname || !username || !requesterSocketId || addfriendname === username) {
