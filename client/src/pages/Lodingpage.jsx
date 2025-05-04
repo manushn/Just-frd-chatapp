@@ -12,7 +12,7 @@ function LoadingPage() {
   useEffect(() => {
     const autoLogin = async () => {
       try {
-        const response = await axios.get("https://just-frd-chatapp.onrender.com", {
+        const response = await axios.get("https://just-frd-chatapp.onrender.com/autologin", {
           headers: {
             Authorization: `Bearer ${token}`, 
           },

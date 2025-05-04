@@ -68,7 +68,7 @@ function Signuppage() {
 
       try{
 
-        const response=await axios.post("https://just-frd-chatapp.onrender.com",{
+        const response=await axios.post("https://just-frd-chatapp.onrender.com/signup",{
           username:Username,
           name:Name,
           email:Email,

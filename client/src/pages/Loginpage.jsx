@@ -17,7 +17,7 @@ function Loginpage() {
     
     if (username && password) {
       try {
-        const response = await axios.post("https://just-frd-chatapp.onrender.com", {
+        const response = await axios.post("https://just-frd-chatapp.onrender.com/login", {
           username,
           password,
         }
