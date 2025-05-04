@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import './css/Loadingpage.css'; // Import the CSS file
+import './css/loadingpage.css'; // Import the CSS file
 
 function LoadingPage() {
   const navigate = useNavigate();
