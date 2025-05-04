@@ -15,7 +15,7 @@ function Chatpage() {
 
     useEffect(() => {
         // Create a single socket connection
-        const newSocket = io("http://192.168.1.23:4000", {
+        const newSocket = io("https://just-frd-chatapp.onrender.com", {
             auth: {
                 token: token, // Pass token for authentication
             }

@@ -72,7 +72,7 @@ function Passreset() {
               }
             }
 
-            const response=await axios.post("http://192.168.1.23:4000/otpreq",{
+            const response=await axios.post("https://just-frd-chatapp.onrender.com",{
               email:Email
             })
             
@@ -104,7 +104,7 @@ function Passreset() {
       if(Email&&otp&&Password){
         
         
-        const response1=await axios.put('http://192.168.1.23:4000/verifyotp',{
+        const response1=await axios.put('https://just-frd-chatapp.onrender.com',{
           email:Email,
           otp:otp,
           password:Password
