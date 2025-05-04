@@ -14,7 +14,7 @@ const ConnectedUsers = {};
 const initializeSocket = (server) => {
   const io = new Server(server, {
     cors: {
-      origin: "https://just-frd-chatapp-2.onrender.com/", 
+      origin: "https://just-frd-chatapp-2.onrender.com", 
       methods: ["GET", "POST", "PUT"],
       credentials: true,
     },
