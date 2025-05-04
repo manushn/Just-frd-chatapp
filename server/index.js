@@ -18,7 +18,7 @@ const app = express();
 const server = http.createServer(app);
 
 app.use(cors({
-  origin: "*", 
+  origin: "https://just-frd-chatapp-2.onrender.com/", 
   methods: ["GET", "POST", "PUT"],
   credentials: true,
 }));
